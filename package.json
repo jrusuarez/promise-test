@@ -2,7 +2,9 @@
   "name": "promise-test",
   "version": "1.0.0",
   "dependencies": {
-    "async": "^2.1.2"
+    "asyncawait": "^1.0.6",
+    "bluebird": "^3.4.7",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {}
 }
