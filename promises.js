@@ -1,57 +1,47 @@
 'use strict';
 const async = require('async');
+const Promise = require('bluebird');
 const start = Date.now();
 
 function lapse() {
   return Date.now() - start;
 }
 
-function asyncFunc1(cb) {
-  console.log('asyncFunc1 called', lapse());
-  setTimeout(function () {
-    console.log('asyncFunc1 returning', lapse());
-    cb();
-  }, 100);
-}
-
-function asyncFunc2(cb) {
-  console.log('asyncFunc2 called', lapse());
-  setTimeout(function () {
-    console.log('asyncFunc2 returning', lapse());
-    cb();
-  }, 200);
-}
-
-function asyncFunc3(n, cb) {
-  console.log('asyncFunc2 called', n, lapse());
-  setTimeout(function () {
-    console.log('asyncFunc2 returning', n, lapse());
-    cb(null);
-  }, n * 100);
-}
-
-
 
 function run() {
-  async.waterfall(
-    [
-      function (cb) {
-        asyncFunc1(cb);
-      },
+  Promise.resolve([]).spread(function(arg1, arg2) {
+      console.log('asyncFunc1 called', lapse());
+      var deferred = Promise.pending();
+      setTimeout(function(){
+          console.log('asyncFunc1 returning', lapse());
+          deferred.resolve();
+      }, 100);
+      return deferred.promise;
+  }).then(function(arg1) {
+      console.log('asyncFunc2 called', lapse());
+      var deferred = Promise.pending();
+      setTimeout(function(){
+          console.log('asyncFunc2 returning', lapse());
+          deferred.resolve();
+      }, 200);
+      return deferred.promise;
+      
+  }).then(function(arg2) {
+      var items = [1,2,3];
+      Promise.each(items, function(n) {
+          console.log('asyncFunc2 called', n, lapse());
+          var deferred = Promise.pending();
+          setTimeout(function(){
+              console.log('asyncFunc2 returning', n, lapse());
+              deferred.resolve();
+          }, n + 100);
+      })
+      .then(function(allItems) {
 
-      function (cb) {
-        asyncFunc2(cb);
-      },
+      });
+  }).then(function(result) {
 
-      function (cb) {
-        async.each([1, 2, 3], asyncFunc3, cb);
-      }
-    ],
-
-    function () {
-      console.log('END');
-    }
-  );
+  });
 }
 
 run();
