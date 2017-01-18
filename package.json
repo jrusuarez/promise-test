@@ -2,7 +2,8 @@
   "name": "promise-test",
   "version": "1.0.0",
   "dependencies": {
-    "async": "^2.1.2"
+    "async": "^2.1.2",
+    "bluebird": "^3.4.7"
   },
   "devDependencies": {}
 }
